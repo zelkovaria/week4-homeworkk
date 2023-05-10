@@ -24,7 +24,7 @@ export class PostsService {
     this.postId += 1;
     const newPosts: Post = {
       id: this.postId++,
-      writerId: user.userId,
+      writerId: user.email,
       content: createPostDto.content,
       createdAt: new Date(),
       updatedAt: new Date(),

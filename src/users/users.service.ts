@@ -6,33 +6,42 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './users.model';
+import { SignupDto } from 'src/auth/dto/signup.dto';
+import { Email } from 'src/email/entities/email.entity';
+import { LoginDto } from 'src/auth/dto/login.dto';
 
 @Injectable()
 export class UsersService {
   users: User[] = [];
 
-  create(createUserDto: CreateUserDto) {
-    const { userId, userPassword, userName } = createUserDto;
+  create(createUserDto: SignupDto) {
+    const { email, name, password, verificationCode } = createUserDto;
 
-    if (this.users.find((user) => user.userId === userId)) {
+    /*if (this.users.find((user) => user.email === email)) {
       throw new ConflictException('User already exist');
+    }*/
+    const exist = this.findOne(email);
+    if (exist) {
+      throw new ConflictException('user already exist');
     }
-
     const user = {
-      userId,
-      userPassword,
-      userName,
+      email,
+      name,
+      password,
+      verificationCode,
     };
 
     this.users.push(user);
+    return user;
   }
 
   findAll() {
     return this.users;
   }
 
-  findOne(userId: string) {
-    const user = this.users.find((user) => user.userId === userId);
+  findOne(email: string) {
+    //const { email } = loginDto;
+    const user = this.users.find((user) => user.email === email);
 
     if (!user) {
       throw new NotFoundException('User not found');
@@ -56,28 +65,25 @@ export class UsersService {
 
   //   return user;
   // }
-  update(id: string, updateUserDto: UpdateUserDto) {
-    const { userId, userName } = updateUserDto;
-    const user = this.users.find((user) => user.userId === userId);
-    if (!user) {
-      throw new NotFoundException('User Not Exist');
-    }
-    this.users = this.users.filter((user) => user.userId !== id); // 기존 정보 제거
+  update(userEmail: string, updateUserDto: UpdateUserDto) {
+    const { email, password } = updateUserDto;
+    const user = this.findOne(userEmail);
+    this.users = this.users.filter((user) => user.email !== userEmail); // 기존 정보 제거
     console.log(this.users);
-    user.userId = userId;
-    user.userName = userName;
+    user.email = email;
+    user.password = password;
     this.users.push(user);
-    console.log('게시글 수정 완료');
+    console.log('게시글 수정 완료'); //이름은 바꿀수 없음
   }
 
-  remove(id: string) {
-    const user = this.users.find((user) => user.userId === id);
+  remove(email: string) {
+    const user = this.users.find((user) => user.email === email);
 
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
-    this.users = this.users.filter((user) => user.userId !== id);
+    this.users = this.users.filter((user) => user.email !== email);
 
     return user;
   }

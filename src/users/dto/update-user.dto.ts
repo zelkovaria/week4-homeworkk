@@ -1,5 +1,5 @@
 export class UpdateUserDto {
-  userId: string;
-  userPassword: string;
-  userName: string;
+  email: string;
+  password: string;
+  //name: string;넘어올 일 자체가 없으면 작성하면 안됨
 }
