@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
-//테스트용 커밋 
+import { AuthModule } from './auth/auth.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
-  imports: [UsersModule],
+  imports: [UsersModule, AuthModule, EmailModule],
   controllers: [],
   providers: [],
 })
